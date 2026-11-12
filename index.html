@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MUN Self-Service Redesign: Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--maroon:#862633;--maroon-dark:#5E1A24;--ink:#1F1A1B;--muted:#5A5052;--sub:#3D3537;--line:#E2DDD9;--soft:#EEEAE7;--bg:#F5F3F1;--green:#1E7A46;--warn-bg:#FFF4E5;--warn-line:#E8A33D;--warn-ink:#3D2A10;--warn-strong:#8A5300}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Source Sans 3',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:16px;line-height:1.4}
+a{color:var(--maroon)}a:hover{color:var(--maroon-dark)}
+button,select,input{font:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+header.top{background:var(--maroon);color:#fff}
+header.top .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{color:#fff;text-decoration:none;display:flex;align-items:baseline;gap:12px}
+.brand b{font-size:20px}.brand span{font-size:16px;opacity:.92}
+.who{display:flex;gap:20px;align-items:center;font-size:15px}
+.linkbtn{background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
+nav.crumbs{background:#fff;border-bottom:1px solid var(--line)}
+nav.crumbs .wrap{padding-top:12px;padding-bottom:12px;font-size:15px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+nav.crumbs [aria-current]{font-weight:600;color:var(--ink)}
+main{padding:28px 0 56px}
+main .wrap{display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-size:30px;line-height:1.2}h2{margin:0;font-size:21px}h3{margin:0;font-size:18px}
+.sub{color:var(--sub);font-size:17px}.muted{color:var(--muted)}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 24px}
+.row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;border-radius:6px;font-weight:600;font-size:16px;cursor:pointer;text-decoration:none;border:2px solid var(--maroon);background:var(--maroon);color:#fff}
+.btn:hover{background:var(--maroon-dark);border-color:var(--maroon-dark);color:#fff}
+.btn.outline{background:#fff;color:var(--maroon)}.btn.outline:hover{background:#F3E9EA;color:var(--maroon)}
+.btn.plain{background:#fff;color:var(--ink);border-color:#A39A9C;font-size:15px;padding:8px 16px}.btn.plain:hover{background:#F5F3F1}
+.btn[disabled]{background:#D8D2CF;border-color:#D8D2CF;color:var(--muted);cursor:not-allowed}
+.status{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ok{color:var(--green)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.tile{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 24px;min-height:140px}
+.tile:hover{border-color:var(--maroon);color:var(--ink)}
+.tile b{font-size:21px}.tile span{color:var(--muted)}
+.tile.hero{background:var(--maroon);border-color:var(--maroon);color:#fff}.tile.hero span{color:#fff}.tile.hero:hover{background:var(--maroon-dark)}
+.news{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.news a{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px}
+.layout{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.layout .side{flex:1 1 240px;max-width:280px}
+.layout .content{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:20px}
+.menu{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 0;display:flex;flex-direction:column}
+.menu a{padding:12px 20px;text-decoration:none;color:var(--ink)}
+.menu a:hover{background:#F5F3F1}.menu a.on{font-weight:700;color:var(--maroon)}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.stat small{display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.stat strong{display:flex;align-items:center;gap:8px;font-size:22px}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--soft);flex-wrap:wrap}
+label.field{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;color:var(--sub)}
+select,input[type=text],input[type=search]{padding:10px 12px;border:1px solid #A39A9C;border-radius:6px;background:#fff;color:var(--ink);font-size:16px;min-height:44px}
+.days{display:flex;gap:8px;flex-wrap:wrap}
+.day{min-height:44px;padding:10px 18px;border-radius:6px;border:2px solid #A39A9C;background:#fff;color:var(--ink);font-weight:600;cursor:pointer}
+.day[aria-pressed=true]{background:var(--maroon);border-color:var(--maroon);color:#fff}
+.cls{display:grid;grid-template-columns:140px minmax(0,1fr) 130px;gap:8px 24px;border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.cls .t{font-size:20px;font-weight:700}.cls .n{font-size:19px;font-weight:700}.cls .r{font-size:19px;font-weight:700;color:var(--maroon)}
+.cap{font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.warn{display:flex;gap:14px;background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:16px 20px;color:var(--warn-ink)}
+.staged{color:var(--warn-strong);font-weight:600;font-size:15px}
+.struck{text-decoration:line-through;color:var(--muted)}
+.added{color:var(--green);font-weight:600;font-size:15px}
+.results{border:1px solid var(--line);border-radius:8px;margin-top:8px}
+.results li{padding:12px 16px}
+.radio{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:14px 16px;cursor:pointer}
+.radio input{width:20px;height:20px;margin-top:2px;accent-color:var(--maroon)}
+.check{display:flex;gap:10px;align-items:flex-start}.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--maroon)}
+.done{display:flex;gap:12px;align-items:center}
+.sr{position:absolute;left:-9999px}
+@media (max-width:760px){.tiles,.news,.three{grid-template-columns:minmax(0,1fr)}.cls{grid-template-columns:minmax(0,1fr)}.layout .side{max-width:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ---------- data ---------- */
+const TODAY = 'Wed';
+const DAY_NAMES = {Mon:'Monday, November 2',Tue:'Tuesday, November 3',Wed:'Wednesday, November 4',Thu:'Thursday, November 5',Fri:'Friday, November 6'};
+const COURSES = {
+  'COMP 3019': {title:'Security and Privacy in Computing Systems', cr:3, meet:[{days:['Mon','Wed','Fri'],s:'10:00 am',e:'10:50 am',kind:'Lecture',sec:'001',room:'EN-2007'}]},
+  'COMP 3150': {title:'Introduction to Human-Computer Interaction', cr:3, meet:[{days:['Tue','Thu'],s:'1:00 pm',e:'2:15 pm',kind:'Lecture',sec:'001',room:'EN-1051'}]},
+  'COMP 4754': {title:'Database Systems', cr:3, meet:[{days:['Tue','Thu'],s:'9:30 am',e:'10:45 am',kind:'Lecture',sec:'001',room:'EN-2036'}]},
+  'MATH 3132': {title:'Numerical Analysis I', cr:3, meet:[{days:['Mon','Wed','Fri'],s:'11:00 am',e:'11:50 am',kind:'Lecture',sec:'001',room:'HH-3017'},{days:['Thu'],s:'3:00 pm',e:'4:50 pm',kind:'Laboratory',sec:'056',room:'HH-3013'}]},
+  'OCSC 1000': {title:'Exploration of the World Ocean', cr:3, online:true, meet:[]},
+};
+const CATALOG = {
+  'COMP 3725': {title:'Computer Networks', cr:3, meet:[{days:['Mon','Wed','Fri'],s:'2:00 pm',e:'2:50 pm',kind:'Lecture',sec:'001',room:'EN-1052'}]},
+  'COMP 3300': {title:'Operating Systems', cr:3, meet:[{days:['Tue','Thu'],s:'3:30 pm',e:'4:45 pm',kind:'Lecture',sec:'001',room:'EN-2040'}]},
+  'COMP 4300': {title:'Introduction to Compiler Construction', cr:3, meet:[{days:['Mon','Wed','Fri'],s:'1:00 pm',e:'1:50 pm',kind:'Lecture',sec:'001',room:'EN-2022'}]},
+  'MATH 3000': {title:'Real Analysis I', cr:3, meet:[{days:['Tue','Thu'],s:'11:00 am',e:'12:15 pm',kind:'Lecture',sec:'001',room:'HH-3026'}]},
+};
+const ORDER = ['9:30 am','10:00 am','11:00 am','12:15 pm','1:00 pm','2:00 pm','3:00 pm','3:30 pm'];
+/* ---------- state ---------- */
+const S = {
+  registered: Object.keys(COURSES),     // confirmed enrolment
+  drops: new Set(), adds: new Set(),    // staged, not yet confirmed
+  query: '', term: 'fall',
+  delivery: 'electronic', gradTerm: 'Spring 2027', gradConfirm: false,
+  lastSubmitted: null,
+};
+const info = c => COURSES[c] || CATALOG[c];
+const credits = () => S.registered.reduce((t, c) => t + info(c).cr, 0);
+const pending = () => S.drops.size + S.adds.size;
+/* ---------- shell ---------- */
+function shell(crumbs, body){
+  const cr = crumbs.map((c,i)=> (i?'<span aria-hidden="true">›</span>':'') + (c[1] ? `<a href="#/${c[1]}">${c[0]}</a>` : `<span aria-current="page">${c[0]}</span>`)).join('');
+  return `<header class="top"><div class="wrap"><a class="brand" href="#/home"><b>Memorial University</b><span>Self-Service</span></a>
+  <div class="who"><span>Prabh Singh</span><a href="#/signed-out" style="color:#fff">Sign out</a></div></div></header>
+  <nav class="crumbs" aria-label="Breadcrumb"><div class="wrap">${cr}</div></nav>
+  <main><div class="wrap">${body}</div></main>`;
+}
+const icon = (p, c='#862633', s=30) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I = {cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',card:'<rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',check:'<circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/>',warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>'};
+const okIcon = (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="#1E7A46" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I.check}</svg>`;
+const termLine = () => `Fall 2026 (current term) · ${S.registered.length} courses · ${credits()} credit hours`;
+/* ---------- pages ---------- */
+const P = {};
+P.home = () => shell([['Students']], `
+  <section class="card status" aria-label="Your status this term">${okIcon()}<strong>Fall 2026 (current term): registered in ${S.registered.length} courses, ${credits()} credit hours</strong>
+    <span class="muted">Holds: <b>None</b></span><a href="#/hub" style="margin-left:auto;font-weight:600">See details in Student Hub</a></section>
+  <h1>What do you need to do?</h1>
+  <div class="tiles">
+    <a class="tile hero" href="#/schedule/${TODAY}">${icon(I.cal,'#fff')}<b>My Class Schedule</b><span>This term's classes, times and rooms</span></a>
+    <a class="tile" href="#/grades">${icon(I.chart)}<b>My Grades</b><span>Final grades by term</span></a>
+    <a class="tile" href="#/registration">${icon(I.edit)}<b>Add or Drop Courses</b><span>Change your registration for a term</span></a>
+    <a class="tile" href="#/exams">${icon(I.clock)}<b>Exam Schedule</b><span>Dates and rooms for final exams</span></a>
+    <a class="tile" href="#/fees">${icon(I.card)}<b>Fees and Payment</b><span>Your balance and how to pay</span></a>
+    <a class="tile" href="#/hub">${icon(I.user)}<b>Student Hub</b><span>Your status, holds and program details</span></a>
+  </div>
+  <h2 class="muted" style="font-size:18px;font-weight:600">University news</h2>
+  <div class="news"><a href="#/news/grad">Thinking about graduate studies? Info sessions this month</a><a href="#/news/parking">Enter the winter parking permit draw</a><a href="#/news/cyber">Free cybersecurity awareness training</a></div>`);
+
+const hubMenu = on => `<nav class="menu" aria-label="Student Hub sections">${[['My Class Schedule','schedule/'+TODAY],['Exam Schedule','exams'],['My Grades','grades'],['Add or Drop Courses','registration'],['Fees and Payment','fees'],['Request a Transcript','transcript'],['Apply to Graduate','graduate']].map(([l,h])=>`<a href="#/${h}" class="${l===on?'on':''}">${l}</a>`).join('')}</nav>`;
+P.hub = () => {
+  const t = S.term;
+  const sel = `<label class="field">Showing term<select data-act="term" style="min-width:280px">
+    <option value="fall" ${t==='fall'?'selected':''}>Fall 2026 (current term)</option>
+    <option value="winter" ${t==='winter'?'selected':''}>Winter 2027</option>
+    <option value="spring" ${t==='spring'?'selected':''}>Spring 2026</option></select></label>`;
+  let stats, courses;
+  if (t==='fall'){
+    stats = `<div class="stat"><small>Registration, Fall 2026</small><strong class="ok">${okIcon()}Registered</strong><span class="sub" style="font-size:16px">${S.registered.length} courses · ${credits()} credit hours</span></div>`;
+    courses = `<div class="row between"><h2>Your courses this term</h2><a class="btn" href="#/schedule/${TODAY}">View class schedule</a></div>
+      <ul class="list">${S.registered.map(c=>`<li><span><b>${c}</b> · ${info(c).title}${info(c).online?' (online)':''}</span><span class="muted">${info(c).cr} credit hours</span></li>`).join('')}</ul>`;
+  } else if (t==='winter'){
+    stats = `<div class="stat"><small>Registration, Winter 2027</small><strong>Not registered yet</strong><span class="sub" style="font-size:16px">Registration for this term has not opened</span></div>`;
+    courses = `<h2>Your courses for Winter 2027</h2><p class="sub" style="margin:0">You have no courses for Winter 2027 yet. When registration opens, you can add courses from Add or Drop Courses.</p>
+      <div class="row"><button class="btn outline" data-act="term-fall">Back to current term (Fall 2026)</button></div>`;
+  } else {
+    stats = `<div class="stat"><small>Registration, Spring 2026</small><strong>Term completed</strong><span class="sub" style="font-size:16px">Final grades are posted</span></div>`;
+    courses = `<h2>Spring 2026 courses</h2><p class="sub" style="margin:0">This term is finished. Your final grades for Spring 2026 are in My Grades.</p>
+      <div class="row"><a class="btn" href="#/grades">View my grades</a><button class="btn outline" data-act="term-fall">Back to current term (Fall 2026)</button></div>`;
+  }
+  return shell([['Students','home'],['Student Hub']], `<div class="layout"><aside class="side">${hubMenu('My Class Schedule')}</aside><div class="content">
+    <div class="row between" style="align-items:flex-end"><h1>Student Hub</h1>${sel}</div>
+    <section class="card three" aria-label="Status">${stats}
+      <div class="stat"><small>Holds</small><strong>None</strong><span class="sub" style="font-size:16px">Nothing is blocking registration</span></div>
+      <div class="stat"><small>Academic standing</small><strong>Clear standing</strong><span class="sub" style="font-size:16px">As of Spring 2026</span></div></section>
+    <section class="card" style="display:flex;flex-direction:column;gap:14px">${courses}</section></div></div>`);
+};
+
+P.schedule = (day) => {
+  if (!DAY_NAMES[day]) day = TODAY;
+  const items = [];
+  S.registered.forEach(c => info(c).meet.forEach(m => { if (m.days.includes(day)) items.push({c, ...m}); }));
+  items.sort((a,b)=>ORDER.indexOf(a.s)-ORDER.indexOf(b.s));
+  const online = S.registered.filter(c => info(c).online);
+  const glance = ['Mon','Tue','Wed','Thu','Fri'].map(d => {
+    const cs = []; S.registered.forEach(c => info(c).meet.forEach(m => { if (m.days.includes(d)) cs.push(c + (m.kind==='Laboratory'?' lab':'')); }));
+    return `<li><b>${d}:</b> ${cs.length ? cs.join(', ') : 'no classes'}</li>`; }).join('');
+  return shell([['Students','home'],['Student Hub','hub'],['My Class Schedule']], `
+    <div class="row between" style="align-items:flex-end"><div><h1>My Class Schedule</h1><div class="sub">${termLine()}</div></div>
+      <div class="row"><span class="muted" style="font-size:15px">View only. Nothing on this page changes your registration.</span><a class="btn outline" href="#/registration">Change registration</a></div></div>
+    <div class="layout"><section class="card content" aria-labelledby="dayh" style="flex:999 1 560px">
+      <div class="cap" id="dayh">Choose a day</div>
+      <div class="days" role="group" aria-label="Day of the week">${['Mon','Tue','Wed','Thu','Fri'].map(d=>`<button class="day" data-act="day" data-day="${d}" aria-pressed="${d===day}">${d===TODAY?d+' (today)':d}</button>`).join('')}</div>
+      <h2 style="font-size:22px">${DAY_NAMES[day]}${day===TODAY?' (today)':''}</h2>
+      ${items.length ? `<ol class="list" style="display:flex;flex-direction:column;gap:12px">${items.map(i=>`<li class="cls" style="border-top:1px solid var(--line)"><div><div class="t">${i.s}</div><div class="muted" style="font-size:15px">to ${i.e}</div></div>
+        <div><div class="n">${info(i.c).title}</div><div class="sub" style="font-size:16px">${i.c}, Section ${i.sec} · ${i.kind}</div></div>
+        <div><div style="font-size:14px;font-weight:600" class="muted">Room</div><div class="r">${i.room}</div></div></li>`).join('')}</ol>` : `<p class="sub" style="margin:0">No classes on this day.</p>`}
+    </section>
+    <aside style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px">
+      ${online.length ? `<section class="card"><h3>Online, no set meeting time</h3>${online.map(c=>`<p style="margin:8px 0 0"><b>${info(c).title}</b><br><span class="sub" style="font-size:15px">${c} · Section 001 · Online in Brightspace</span></p>`).join('')}</section>` : ''}
+      <section class="card"><h3>This week at a glance</h3><ul class="list" style="font-size:15px">${glance}</ul></section>
+    </aside></div>`);
+};
+
+P.registration = () => {
+  const q = S.query.trim().toLowerCase();
+  const hits = q ? Object.entries(CATALOG).filter(([c,v]) => (c+' '+v.title).toLowerCase().includes(q) || c.replace(' ','').toLowerCase().includes(q.replace(' ',''))) : [];
+  const rows = S.registered.map(c => { const d = S.drops.has(c); return `<li><span class="${d?'struck':''}"><b>${c}</b> · ${info(c).title}</span>
+    <span class="row" style="gap:12px">${d?'<span class="staged">Will be dropped</span>':''}<button class="btn plain" data-act="${d?'undo':'drop'}" data-c="${c}" aria-label="${d?'Undo drop of':'Drop'} ${c}">${d?'Undo':'Drop'}</button></span></li>`; }).join('')
+   + [...S.adds].map(c => `<li><span><b>${c}</b> · ${info(c).title}</span><span class="row" style="gap:12px"><span class="added">Will be added</span><button class="btn plain" data-act="unadd" data-c="${c}" aria-label="Undo add of ${c}">Undo</button></span></li>`).join('');
+  const n = pending();
+  return shell([['Students','home'],['My Class Schedule','schedule/'+TODAY],['Change Registration']], `
+    <div><h1>Change Registration: Fall 2026</h1><div class="sub">Add or drop courses for the current term.</div></div>
+    <div class="warn" role="note">${icon(I.warn,'#8A5300',24)}<div><strong style="font-size:17px">You are editing your enrolment.</strong><br>Nothing changes until you review and confirm. To only look at your timetable, go back to <a href="#/schedule/${TODAY}">My Class Schedule</a>.</div></div>
+    <section class="card"><h2>Your registered courses</h2><ul class="list" style="margin-top:12px">${rows}</ul></section>
+    <section class="card"><h2>Add a course</h2>
+      <label class="field" style="margin-top:10px;max-width:520px">Search by course name, subject or CRN<input type="search" data-act="search" value="${S.query.replace(/"/g,'&quot;')}" placeholder="e.g. Operating Systems or COMP 3725"></label>
+      ${q ? (hits.length ? `<ul class="list results">${hits.map(([c,v])=>{ const have = S.registered.includes(c), st = S.adds.has(c);
+        const m = v.meet[0]; return `<li><span><b>${c}</b> · ${v.title}<br><span class="muted" style="font-size:15px">${m.days.join(', ')} ${m.s}–${m.e} · Room ${m.room}</span></span>
+        ${have?'<span class="muted">Already registered</span>': st?'<span class="added">Added to your changes</span>':`<button class="btn plain" data-act="add" data-c="${c}" aria-label="Add ${c}">Add</button>`}</li>`; }).join('')}</ul>`
+        : `<p class="muted" style="margin:10px 0 0">No courses match "${S.query}". Try a course name, a subject code like COMP, or a number.</p>`) : `<p class="muted" style="margin:10px 0 0">Try "networks", "COMP" or "3300".</p>`}
+    </section>
+    <div class="card row between"><strong style="font-size:17px" aria-live="polite">${n===0?'No changes yet':n+(n===1?' change':' changes')+' ready to review'}</strong>
+      <div class="row"><button class="linkbtn" style="color:var(--maroon);font-weight:600" data-act="cancel">Cancel</button><button class="btn" data-act="review" ${n===0?'disabled':''}>Review changes</button></div></div>`);
+};
+
+P.review = () => {
+  if (!pending()) { location.hash = '#/registration'; return ''; }
+  const items = [...S.drops].map(c=>`<li><span><b>Drop</b> ${c} · ${info(c).title}</span><span class="muted">−${info(c).cr} credit hours</span></li>`).join('')
+    + [...S.adds].map(c=>`<li><span><b>Add</b> ${c} · ${info(c).title}</span><span class="muted">+${info(c).cr} credit hours</span></li>`).join('');
+  const after = credits() - [...S.drops].reduce((t,c)=>t+info(c).cr,0) + [...S.adds].reduce((t,c)=>t+info(c).cr,0);
+  return shell([['Students','home'],['Change Registration','registration'],['Review changes']], `
+    <div><h1>Review your changes</h1><div class="sub">Fall 2026. Check these before you confirm.</div></div>
+    <section class="card"><h2>Changes to submit</h2><ul class="list" style="margin-top:12px">${items}</ul>
+      <p class="sub" style="margin:14px 0 0">After these changes: <b>${after} credit hours</b> this term.</p></section>
+    <div class="card row between"><a href="#/registration" style="font-weight:600">Back to edit</a><button class="btn" data-act="confirm">Confirm changes</button></div>`);
+};
+
+P.confirmed = () => {
+  const L = S.lastSubmitted;
+  if (!L) { location.hash = '#/registration'; return ''; }
+  return shell([['Students','home'],['Change Registration','registration'],['Changes submitted']], `
+    <section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="done">${okIcon(30)}<h1>Your registration was updated</h1></div>
+      <ul class="list">${L.drops.map(c=>`<li><span>Dropped <b>${c}</b> · ${info(c).title}</span></li>`).join('')}${L.adds.map(c=>`<li><span>Added <b>${c}</b> · ${info(c).title}</span></li>`).join('')}</ul>
+      <p class="sub" style="margin:0">You are now registered in ${S.registered.length} courses, ${credits()} credit hours for Fall 2026.</p>
+      <div class="row"><a class="btn" href="#/schedule/${TODAY}">View updated schedule</a><a class="btn outline" href="#/home">Back to Students home</a></div></section>`);
+};
+
+const simple = (crumb, title, body) => shell([['Students','home'],['Student Hub','hub'],[crumb]], `<div class="layout"><aside class="side">${hubMenu(crumb)}</aside><div class="content"><h1>${title}</h1>${body}</div></div>`);
+P.grades = () => simple('My Grades','My Grades', `<section class="card"><h2>Fall 2026 (current term)</h2><ul class="list" style="margin-top:12px">${S.registered.map(c=>`<li><span><b>${c}</b> · ${info(c).title}</span><span class="muted">Not posted yet</span></li>`).join('')}</ul>
+  <p class="sub" style="margin:14px 0 0">Final grades for Fall 2026 appear here after the exam period.</p></section>`);
+P.exams = () => simple('Exam Schedule','Exam Schedule', `<section class="card"><h2>Fall 2026 final exams</h2><ul class="list" style="margin-top:12px">${S.registered.map(c=>`<li><span><b>${c}</b> · ${info(c).title}</span><span class="muted">${info(c).online?'Online exam: details in Brightspace':'Date and room to be posted'}</span></li>`).join('')}</ul></section>`);
+P.fees = () => simple('Fees and Payment','Fees and Payment', `<section class="card three"><div class="stat"><small>Fall 2026 balance</small><strong>$0.00</strong><span class="sub" style="font-size:16px">Nothing owing</span></div>
+  <div class="stat"><small>Next payment due</small><strong>None</strong><span class="sub" style="font-size:16px">No payment is due this term</span></div>
+  <div class="stat"><small>Tax forms</small><strong>T2202</strong><span class="sub" style="font-size:16px">Available in February</span></div></section>`);
+P.transcript = () => simple('Request a Transcript','Request an Official Transcript', `<form class="card" data-form="transcript" style="display:flex;flex-direction:column;gap:12px"><h2>How should it be delivered?</h2>
+  <label class="radio"><input type="radio" name="del" value="electronic" ${S.delivery==='electronic'?'checked':''} data-act="delivery"><span><b>Electronic (PDF)</b><br><span class="muted">Sent by email within 2 business days</span></span></label>
+  <label class="radio"><input type="radio" name="del" value="mailed" ${S.delivery==='mailed'?'checked':''} data-act="delivery"><span><b>Mailed paper copy</b><br><span class="muted">Sent to your mailing address on file</span></span></label>
+  <div class="row"><button class="btn" type="submit">Submit request</button><a href="#/hub">Cancel</a></div></form>`);
+P['transcript-sent'] = () => simple('Request a Transcript','Request received', `<section class="card done">${okIcon(30)}<div><b>Your transcript request was submitted.</b><br><span class="sub">Delivery: ${S.delivery==='electronic'?'electronic (PDF by email)':'mailed paper copy'}.</span></div></section><div class="row"><a class="btn outline" href="#/hub">Back to Student Hub</a></div>`);
+P.graduate = () => simple('Apply to Graduate','Apply to Graduate', `<form class="card" data-form="graduate" style="display:flex;flex-direction:column;gap:12px">
+  <p class="sub" style="margin:0">Program: <b>Bachelor of Science</b>, majors in Applied Mathematics and Computer Science</p>
+  <label class="field" style="max-width:320px">Expected graduation<select data-act="gradterm"><option ${S.gradTerm==='Spring 2027'?'selected':''}>Spring 2027</option><option ${S.gradTerm==='Fall 2027'?'selected':''}>Fall 2027</option></select></label>
+  <label class="check"><input type="checkbox" data-act="gradconfirm" ${S.gradConfirm?'checked':''}><span>I confirm that I expect to complete my program requirements by this term.</span></label>
+  <div class="row"><button class="btn" type="submit" ${S.gradConfirm?'':'disabled'}>Submit application</button><a href="#/hub">Cancel</a></div></form>`);
+P['graduate-sent'] = () => simple('Apply to Graduate','Application submitted', `<section class="card done">${okIcon(30)}<div><b>Your application to graduate was submitted.</b><br><span class="sub">Expected graduation: ${S.gradTerm}. You can check its status here later.</span></div></section><div class="row"><a class="btn outline" href="#/hub">Back to Student Hub</a></div>`);
+const NEWS = {grad:['Thinking about graduate studies?','Information sessions for undergraduate students considering a master’s or PhD run throughout this month.'],
+  parking:['Winter parking permit draw','Students who need a parking permit for the winter term can enter the draw before the deadline.'],
+  cyber:['Free cybersecurity awareness training','A short online course on protecting your accounts and spotting phishing is available to all students.']};
+P.news = (id) => shell([['Students','home'],['University news']], `<h1>University news</h1>${Object.entries(NEWS).map(([k,[t,b]])=>`<article class="card" id="news-${k}" ${k===id?'style="border-color:#862633;border-width:2px"':''}><h2>${t}</h2><p class="sub" style="margin:8px 0 0">${b}</p></article>`).join('')}<div class="row"><a class="btn outline" href="#/home">Back to Students home</a></div>`);
+P['signed-out'] = () => `<main style="padding-top:80px"><div class="wrap" style="max-width:560px"><section class="card" style="display:flex;flex-direction:column;gap:14px;align-items:flex-start"><b style="font-size:20px">Memorial University Self-Service</b><h1>You have signed out</h1><p class="sub" style="margin:0">For your security, close this browser window if you are on a shared computer.</p><a class="btn" href="#/home">Sign in again</a></section></div></main>`;
+
+/* ---------- router & events ---------- */
+const app = document.getElementById('app');
+function render(){
+  const [page, arg] = (location.hash.replace(/^#\/?/,'') || 'home').split('/');
+  const fn = P[page] || P.home;
+  const html = fn(arg);
+  if (html) { app.innerHTML = html; }
+  const focusSearch = document.querySelector('[data-act=search]');
+  if (focusSearch && render.keepSearchFocus) { focusSearch.focus(); const v = focusSearch.value; focusSearch.setSelectionRange(v.length, v.length); }
+  render.keepSearchFocus = false;
+  if (render.scrollTop) window.scrollTo(0,0);
+  if (page === 'news' && arg) { const el = document.getElementById('news-'+arg); if (el) el.scrollIntoView(); }
+}
+window.addEventListener('hashchange', () => { render.scrollTop = true; render(); });
+app.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, c = b.dataset.c;
+  if (a === 'day') { location.hash = '#/schedule/' + b.dataset.day; return; }
+  if (a === 'drop') S.drops.add(c);
+  else if (a === 'undo') S.drops.delete(c);
+  else if (a === 'add') S.adds.add(c);
+  else if (a === 'unadd') S.adds.delete(c);
+  else if (a === 'cancel') { S.drops.clear(); S.adds.clear(); S.query = ''; location.hash = '#/schedule/' + TODAY; return; }
+  else if (a === 'review') { location.hash = '#/review'; return; }
+  else if (a === 'confirm') {
+    S.lastSubmitted = {drops:[...S.drops], adds:[...S.adds]};
+    S.registered = S.registered.filter(x => !S.drops.has(x)).concat([...S.adds]);
+    S.drops.clear(); S.adds.clear(); S.query = '';
+    location.hash = '#/confirmed'; return;
+  }
+  else if (a === 'term-fall') S.term = 'fall';
+  else return;
+  render.scrollTop = false; render();
+});
+app.addEventListener('change', e => {
+  const a = e.target.dataset.act;
+  if (a === 'term') S.term = e.target.value;
+  else if (a === 'delivery') S.delivery = e.target.value;
+  else if (a === 'gradterm') S.gradTerm = e.target.value;
+  else if (a === 'gradconfirm') S.gradConfirm = e.target.checked;
+  else return;
+  render.scrollTop = false; render();
+});
+app.addEventListener('input', e => { if (e.target.dataset.act === 'search') { S.query = e.target.value; render.keepSearchFocus = true; render.scrollTop = false; render(); } });
+app.addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target.dataset.form;
+  if (f === 'transcript') location.hash = '#/transcript-sent';
+  if (f === 'graduate' && S.gradConfirm) location.hash = '#/graduate-sent';
+});
+render();
+</script>
+</body>
+</html>
